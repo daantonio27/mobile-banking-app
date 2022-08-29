@@ -18,12 +18,38 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   Abonnes abonnes = Abonnes("", "");
-  String url = "http://localhost:8080/login";
+  String url = "http://10.0.2.2:9090/authenticate";
 
-  Future save() async {
+  Future<dynamic> save(String user_name, String user_password) async {
+    final response = await http.post(Uri.parse(url),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'login': user_name,
+        'password': user_password,
+      }),
+    );
+    print(response);
+    if (response.statusCode == 200) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));
+      // then parse the JSON.
+      //TODO
+    } else {
+      // If the server did not return a 200 CREATED response,
+      // then throw an exception.
+      throw Exception('Failed login.');
+    }
+  }
+
+  /*save() async {
     var res = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'email': abonnes.login, 'password': abonnes.password}));
+        body: json.encode({'login': abonnes.user_name, 'password': abonnes.user_password}));
     print(res.body);
     if (res.body != null) {
       Navigator.push(
@@ -33,6 +59,21 @@ class _LoginState extends State<Login> {
           ));
     }
   }
+*/
+
+  /*save() async {
+    var res = await http.post(Uri.parse(url),
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode({'login': abonnes.user_name, 'password': abonnes.user_password}));
+    print(res.body);
+    if (res.body != null) {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => HomePage(),
+          ));
+    }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -62,9 +103,9 @@ class _LoginState extends State<Login> {
                     child: Column(
                       children: [
                         SizedBox(
-                          height: 100,
+                          height: 50,
                         ),
-                        Text("Login",
+                        Text("CONNEXION",
                             style: GoogleFonts.pacifico(
                               fontWeight: FontWeight.bold,
                               fontSize: 50,
@@ -76,7 +117,7 @@ class _LoginState extends State<Login> {
                         Align(
                           alignment: Alignment.topLeft,
                           child: Text(
-                            "Email",
+                            "Login",
                             style: GoogleFonts.roboto(
                               // fontWeight: FontWeight.bold,
                               fontSize: 40,
@@ -85,13 +126,14 @@ class _LoginState extends State<Login> {
                           ),
                         ),
                         TextFormField(
-                          controller: TextEditingController(text: abonnes.login),
+                          controller:
+                              TextEditingController(text: abonnes.user_name),
                           onChanged: (val) {
-                            abonnes.login = val;
+                            abonnes.user_name = val;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Password is Empty';
+                              return 'login vide';
                             }
                             return null;
                           },
@@ -122,14 +164,14 @@ class _LoginState extends State<Login> {
                         ),
                         TextFormField(
                           obscureText: true,
-                          controller:
-                              TextEditingController(text: abonnes.password),
+                          controller: TextEditingController(
+                              text: abonnes.user_password),
                           onChanged: (val) {
-                            abonnes.password = val;
+                            abonnes.user_password = val;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
-                              return 'Email is Empty';
+                              return 'Password vide';
                             }
                             return null;
                           },
@@ -156,7 +198,7 @@ class _LoginState extends State<Login> {
                                       builder: (context) => WelcomePage()));
                             },
                             child: Text(
-                              "Dont have Account ?",
+                              "Code secret oublié ?",
                               style: GoogleFonts.roboto(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 20,
@@ -178,7 +220,7 @@ class _LoginState extends State<Login> {
                       color: Color.fromRGBO(233, 65, 82, 1),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          save();
+                          save;
                         }
                       },
                       shape: RoundedRectangleBorder(

@@ -23,7 +23,7 @@ class _State extends State<LoginPage> {
   Future save() async {
     var res = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'login': abonnes.login, 'password': abonnes.password}));
+        body: json.encode({'login': abonnes.user_name, 'password': abonnes.user_password}));
     print(res.body);
     if (res.body != null) {
       Navigator.push(
@@ -77,7 +77,7 @@ class _State extends State<LoginPage> {
                 child: TextField(
 
                   obscureText: true,
-                  controller: TextEditingController(text: abonnes.login),
+                  controller: TextEditingController(text: abonnes.user_name),
                   /*onChanged: (val) {
                     abonnes.login = val;
                   },
@@ -98,7 +98,7 @@ class _State extends State<LoginPage> {
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextField(
                   obscureText: true,
-                  controller: TextEditingController(text: abonnes.password),
+                  controller: TextEditingController(text: abonnes.user_password),
                   /*onChanged: (val) {
                     abonnes.password = val;
                   },

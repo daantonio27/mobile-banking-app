@@ -1,6 +1,6 @@
 class Abonnes {
-	 String login;
-   String password;
+	 String user_name;
+   String user_password;
 
-   Abonnes(this.login, this.password);
+   Abonnes(this.user_name, this.user_password);
 }

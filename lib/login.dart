@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:sush_bank/home/homepage.dart';
 import 'package:sush_bank/screen/welcome_page.dart';
 
-import 'abonnes.dart';
+import 'User.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:http/http.dart' as http;
@@ -17,8 +17,8 @@ class Login extends StatefulWidget {
 
 class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
-  Abonnes abonnes = Abonnes("", "");
-  String url = "http://10.0.2.2:9090/authenticate";
+  Users users = Users("", "");
+  String url = "http://10.0.2.2:8080/authenticate";
 
   Future<dynamic> save(String user_name, String user_password) async {
     final response = await http.post(Uri.parse(url),
@@ -32,8 +32,7 @@ class _LoginState extends State<Login> {
     );
     print(response);
     if (response.statusCode == 200) {
-      Navigator.push(
-          context,
+      Navigator.push(context,
           MaterialPageRoute(
             builder: (context) => HomePage(),
           ));
@@ -127,9 +126,9 @@ class _LoginState extends State<Login> {
                         ),
                         TextFormField(
                           controller:
-                              TextEditingController(text: abonnes.user_name),
+                              TextEditingController(text: users.user_name),
                           onChanged: (val) {
-                            abonnes.user_name = val;
+                            users.user_name = val;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -164,10 +163,9 @@ class _LoginState extends State<Login> {
                         ),
                         TextFormField(
                           obscureText: true,
-                          controller: TextEditingController(
-                              text: abonnes.user_password),
+                          controller: TextEditingController(text: users.user_password),
                           onChanged: (val) {
-                            abonnes.user_password = val;
+                            users.user_password = val;
                           },
                           validator: (value) {
                             if (value.isEmpty) {
@@ -220,7 +218,8 @@ class _LoginState extends State<Login> {
                       color: Color.fromRGBO(233, 65, 82, 1),
                       onPressed: () {
                         if (_formKey.currentState.validate()) {
-                          save;
+                          save(users.user_name.toString(),
+                              users.user_password.toString());
                         }
                       },
                       shape: RoundedRectangleBorder(

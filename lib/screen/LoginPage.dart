@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:sush_bank/abonnes.dart';
+import 'package:sush_bank/User.dart';
 import 'package:sush_bank/home/HomePage.dart';
 
 import 'package:google_fonts/google_fonts.dart';
@@ -17,13 +17,13 @@ class _State extends State<LoginPage> {
   TextEditingController passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
-  Abonnes abonnes = Abonnes("", "");
+  Users users = Users("", "");
   String url = "http://localhost:8080/login";
 
   Future save() async {
     var res = await http.post(Uri.parse(url),
         headers: {'Content-Type': 'application/json'},
-        body: json.encode({'login': abonnes.user_name, 'password': abonnes.user_password}));
+        body: json.encode({'login': users.user_name, 'password': users.user_password}));
     print(res.body);
     if (res.body != null) {
       Navigator.push(
@@ -77,7 +77,7 @@ class _State extends State<LoginPage> {
                 child: TextField(
 
                   obscureText: true,
-                  controller: TextEditingController(text: abonnes.user_name),
+                  controller: TextEditingController(text: users.user_name),
                   /*onChanged: (val) {
                     abonnes.login = val;
                   },
@@ -98,7 +98,7 @@ class _State extends State<LoginPage> {
                 padding: EdgeInsets.fromLTRB(10, 10, 10, 0),
                 child: TextField(
                   obscureText: true,
-                  controller: TextEditingController(text: abonnes.user_password),
+                  controller: TextEditingController(text: users.user_password),
                   /*onChanged: (val) {
                     abonnes.password = val;
                   },

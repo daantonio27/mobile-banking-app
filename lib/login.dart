@@ -20,6 +20,17 @@ class _LoginState extends State<Login> {
   Users users = Users("", "");
   String url = "http://10.0.2.2:8080/authenticate";
 
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+
+  bool togglevisibilty = false;
+  @override
+  void dispose() {
+    emailcontroller.dispose();
+    passwordcontroller.dispose();
+    super.dispose();
+  }
+
   Future<dynamic> save(String user_name, String user_password) async {
     final response = await http.post(Uri.parse(url),
       headers: <String, String>{
@@ -77,161 +88,108 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      // resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        title: const Text('Login Page'),
+        centerTitle: true,
+      ),
       body: SingleChildScrollView(
         child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Container(
-                  height: 750,
-                  width: MediaQuery.of(context).size.width,
-                  decoration: BoxDecoration(
-                    color: Color.fromRGBO(233, 65, 82, 1),
-                    boxShadow: [
-                      BoxShadow(
-                          blurRadius: 10,
-                          color: Colors.black,
-                          offset: Offset(1, 5))
-                    ],
-                    borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(80),
-                        bottomRight: Radius.circular(20)),
+          key: _formKey,
+          child: Column(children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                keyboardType: TextInputType.text,
+                enabled: true,
+                validator: (user_name) {
+                  if (user_name == null || user_name == '') {
+                    return 'UserName requis';
+                  } else {
+                    return null;
+                  }
+                },
+                controller: emailcontroller,
+                decoration: InputDecoration(
+                    focusColor: Colors.green,
+                    filled: true,
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.green)),
+                    enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15),
+                        borderSide: const BorderSide(color: Colors.green)),
+                    hintText: " Entrez userName",
+                    prefixIcon: const Icon(Icons.email),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(15))),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextFormField(
+                obscureText: togglevisibilty,
+                keyboardType: TextInputType.visiblePassword,
+                validator: (user_password) {
+                  if (user_password == null || user_password == '') {
+                    return 'Mot de passe requis';
+                  } else if (user_password.length < 5) {
+                    return 'Entrez min 5 lettres';
+                  } else {
+                    return null;
+                  }
+                },
+                controller: passwordcontroller,
+                decoration: InputDecoration(
+                  focusColor: Colors.green,
+                  labelText: "Entrez Password",
+                  hintText: " Entrez password",
+                  prefixIcon: const Icon(Icons.lock),
+                  suffixIcon: IconButton(
+                    onPressed: () {
+                      setState(() {
+                        togglevisibilty = !togglevisibilty;
+                      });
+                    },
+                    icon: togglevisibilty
+                        ? const Icon(Icons.visibility_off)
+                        : const Icon(Icons.visibility),
                   ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                        ),
-                        Text("CONNEXION",
-                            style: GoogleFonts.pacifico(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 50,
-                              color: Colors.white,
-                            )),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Login",
-                            style: GoogleFonts.roboto(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 40,
-                              color: Color.fromRGBO(255, 255, 255, 0.8),
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          controller:
-                              TextEditingController(text: users.user_name),
-                          onChanged: (val) {
-                            users.user_name = val;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'login vide';
-                            }
-                            return null;
-                          },
-                          style: TextStyle(fontSize: 30, color: Colors.white),
-                          decoration: InputDecoration(
-                              errorStyle:
-                                  TextStyle(fontSize: 20, color: Colors.black),
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                        ),
-                        Container(
-                          height: 8,
-                          color: Color.fromRGBO(255, 255, 255, 0.4),
-                        ),
-                        SizedBox(
-                          height: 60,
-                        ),
-                        Align(
-                          alignment: Alignment.topLeft,
-                          child: Text(
-                            "Password",
-                            style: GoogleFonts.roboto(
-                              // fontWeight: FontWeight.bold,
-                              fontSize: 40,
-                              color: Color.fromRGBO(255, 255, 255, 0.8),
-                            ),
-                          ),
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          controller: TextEditingController(text: users.user_password),
-                          onChanged: (val) {
-                            users.user_password = val;
-                          },
-                          validator: (value) {
-                            if (value.isEmpty) {
-                              return 'Password vide';
-                            }
-                            return null;
-                          },
-                          style: TextStyle(fontSize: 30, color: Colors.white),
-                          decoration: InputDecoration(
-                              errorStyle:
-                                  TextStyle(fontSize: 20, color: Colors.black),
-                              border: OutlineInputBorder(
-                                  borderSide: BorderSide.none)),
-                        ),
-                        Container(
-                          height: 8,
-                          color: Color.fromRGBO(255, 255, 255, 0.4),
-                        ),
-                        SizedBox(
-                          height: 60,
-                        ),
-                        Center(
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => WelcomePage()));
-                            },
-                            child: Text(
-                              "Code secret oublié ?",
-                              style: GoogleFonts.roboto(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Colors.white),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                SizedBox(
-                  height: 40,
-                ),
-                Container(
-                  height: 90,
-                  width: 90,
-                  child: FlatButton(
-                      color: Color.fromRGBO(233, 65, 82, 1),
-                      onPressed: () {
-                        if (_formKey.currentState.validate()) {
-                          save(users.user_name.toString(),
-                              users.user_password.toString());
-                        }
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                        size: 30,
-                      )),
-                )
-              ],
-            )),
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            buildbutton(),
+          ]),
+        ),
+      ),
+    );
+  }
+
+  buildbutton() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(10),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Login Successful'),
+              ),
+            );
+          }
+        },
+        child: const Text('Login'),
       ),
     );
   }

@@ -18,7 +18,7 @@ class _State extends State<LoginPage> {
 
   final _formKey = GlobalKey<FormState>();
   Users users = Users("", "");
-  String url = "http://localhost:8080/login";
+  String url = "http://10.0.2.2:8080/authenticate";
 
   Future save() async {
     var res = await http.post(Uri.parse(url),
